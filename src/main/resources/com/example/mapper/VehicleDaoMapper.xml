@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.VehicleDAO">
+
+    <!--开启mybatis的缓存机制-->
+    <cache type="com.example.cache.RedisCache"/>
+
+<!--    <cache/>-->
+
+    <!--添加车辆信息的查询方法-->
+    <insert id="addVehicle" parameterType="Vehicle">
+        INSERT INTO vehicle_info values (#{vid}, #{vehicleNumber}, #{batteryType}, #{totalMileage},#{batteryHealthStatus})
+    </insert>
+    <!--添加车辆信息的查询方法-->
+    <select id="getAllVehicles" resultType="Vehicle">
+        SELECT * FROM vehicle_info
+    </select>
+
+</mapper>
+
+

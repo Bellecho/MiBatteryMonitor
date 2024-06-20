@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.dao.WarnRuleDAO">
+
+    <!--开启mybatis的缓存机制-->
+    <cache  type="com.example.cache.RedisCache"/>
+<!--    <cache-ref namespace="com.example.dao.VehicleDAO"/>-->
+
+    <select id="getWarnInfo" parameterType="WarnQuery" resultType="WarnInfo">
+        SELECT
+            v.vehicle_number as vehicleNumber,
+            v.battery_type as batteryType,
+            w.rule_name as ruleName,
+            c.level
+        FROM
+            vehicle_info v
+        JOIN
+            rule_info w ON v.battery_type = w.battery_type
+        JOIN
+            rule_conditions c ON w.rule_id = c.rule_id AND w.battery_type = c.battery_type
+        WHERE
+            v.vehicle_number = #{vid}
+          <if test="wid!= 0">
+            AND w.rule_id=#{wid}
+          </if>
+          <if test="type== 1">
+            AND w.rule_name = '电压差报警'
+          </if>
+          <if test="type== 2">
+            AND w.rule_name = '电流差报警'
+          </if>
+        AND (#{sub} IS NULL OR c.lower IS NULL OR #{sub} >= c.lower)
+        AND (#{sub} IS NULL OR c.upper IS NULL OR c.upper > #{sub});
+    </select>
+
+</mapper>
+
+
